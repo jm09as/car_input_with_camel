@@ -3,13 +3,14 @@ package hu.queue.camelprocess;
 import hu.queue.exceptions.BusinessLogicProcessingException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import lombok.RequiredArgsConstructor;
 import org.apache.camel.builder.RouteBuilder;
 
 @ApplicationScoped
+@RequiredArgsConstructor(onConstructor_ = @Inject)
 public class CarJsonParserRoute extends RouteBuilder {
 
-    @Inject
-    CarJsonParserProcessor carJsonParserProcessor;
+    private final CarJsonParserProcessor carJsonParserProcessor;
 
     @Override
     public void configure() {

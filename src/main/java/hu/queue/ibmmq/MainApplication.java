@@ -6,6 +6,7 @@ import hu.queue.mapper.CarEntityFactory;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Message;
 
@@ -13,13 +14,12 @@ import java.util.Arrays;
 
 @Slf4j
 @ApplicationScoped
+@RequiredArgsConstructor(onConstructor_ = @Inject)
 public class MainApplication {
 
-    @Inject
-    Parser carParser;
+    private final Parser carParser;
 
-    @Inject
-    CarEntityFactory carEntityFactory;
+    private final CarEntityFactory carEntityFactory;
 
     @Transactional
     public void run(Message message, String messageId) {
