@@ -1,4 +1,4 @@
-# ibmmq-queue-project
+# artemis-queue-project
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
