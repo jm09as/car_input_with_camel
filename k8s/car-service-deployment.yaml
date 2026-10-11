@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: car-service
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: car-service
+
+  template:
+    metadata:
+      labels:
+        app: car-service
+
+    spec:
+      containers:
+        - name: car-service
+          image: car-service:1.3
+
+          ports:
+            - containerPort: 8080
+
+          imagePullPolicy: Never
+          env:
+            - name: QUARKUS_ARTEMIS_URL
+              value: "tcp://artemis:61616"
+            - name: QUARKUS_ARTEMIS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: artemis-credentials
+                  key: ARTEMIS_USER
+            - name: QUARKUS_ARTEMIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: artemis-credentials
+                  key: ARTEMIS_PASSWORD

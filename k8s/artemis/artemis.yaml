@@ -1,0 +1,64 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: artemis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: artemis
+  template:
+    metadata:
+      labels:
+        app: artemis
+    spec:
+      securityContext:
+        fsGroup: 1001
+      containers:
+        - name: artemis
+          image: apache/activemq-artemis:latest
+          ports:
+            - name: messaging
+              containerPort: 61616
+            - name: web
+              containerPort: 8161
+          env:
+            - name: ARTEMIS_USER
+              valueFrom:
+                secretKeyRef:
+                  name: artemis-credentials
+                  key: ARTEMIS_USER
+            - name: ARTEMIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: artemis-credentials
+                  key: ARTEMIS_PASSWORD
+            - name: ANONYMOUS_LOGIN
+              value: "false"
+            - name: EXTRA_ARGS
+              value: "--http-host 0.0.0.0 --relax-jolokia"
+          volumeMounts:
+            - name: artemis-data
+              mountPath: /var/lib/artemis-instance
+      volumes:
+        - name: artemis-data
+          persistentVolumeClaim:
+            claimName: artemis-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: artemis
+spec:
+  selector:
+    app: artemis
+  ports:
+    - name: messaging
+      port: 61616
+      targetPort: 61616
+    - name: web
+      port: 8161
+      targetPort: 8161
+  type: ClusterIP
+
